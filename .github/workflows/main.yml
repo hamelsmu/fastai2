@@ -41,10 +41,15 @@ jobs:
         ref: ${{github.event.pull_request.head.ref}}
         repository: ${{github.event.pull_request.head.repo.full_name}}
 
-#     - name: Install libraries
-#       run: |
-#         pip install -U nbdev
-#         pip install -Ue .
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.6' # Version range or exact version of a Python version to use, using SemVer's version range syntax
+        architecture: 'x64'
+
+    - name: Install libraries
+      run: |
+        pip install -U nbdev
+        # pip install -Ue .
 
 #     - name: Attempt to read notebooks
 #       run: |
