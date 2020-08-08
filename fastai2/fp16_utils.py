@@ -5,7 +5,7 @@ from torch.autograd import Variable
 from torch._utils import _flatten_dense_tensors, _unflatten_dense_tensors
 
 
-def foo()
+def foo():
   """This is supposed trigger a CI error""".
   return false
 
