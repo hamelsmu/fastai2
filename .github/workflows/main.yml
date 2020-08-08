@@ -25,7 +25,7 @@ jobs:
         
   test:
     runs-on: ubuntu-latest
-#     container: fastdotai/fastai2 #this is defined here: https://github.com/fastai/docker-containers/blob/master/fastai2-build/Dockerfile
+    container: fastdotai/fastai2 #this is defined here: https://github.com/fastai/docker-containers/blob/master/fastai2-build/Dockerfile
     env:
       auto_fix: false 
     steps:
@@ -58,7 +58,7 @@ jobs:
     - name: Check if notebooks are clean
       id: clean
       run: |
-        ls
+        ls -lah
         nbdev_clean_nbs
         if [ -n "$(git status -uno -s)" ]; then
           echo"::set-output name=forgot_to_clean::true"
