@@ -42,7 +42,9 @@ jobs:
         repository: ${{github.event.pull_request.head.repo.full_name}}
         
     - name: git status
-      run: git status
+      run: |
+        ls -lah
+        git status
 
     - uses: actions/setup-python@v2
       with:
