@@ -53,6 +53,7 @@ jobs:
     - name: Check if notebooks are clean
       id: clean
       run: |
+        ls
         nbdev_clean_nbs
         if [ -n "$(git status -uno -s)" ]; then
           echo"::set-output name=forgot_to_clean::true"
@@ -76,15 +77,6 @@ jobs:
           fi
         fi
 
-#     - name: Commit differences back to GitHub
-#       if: env.auto_fix == 'true' && ( steps.clean.outputs.forgot_to_clean == 'true' || steps.clean.outputs.forgot_to_lib == 'true' )
-#       run: |
-#         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-#         git config --global user.name "github-actions[bot]"
-#         git add nbs && git commit --allow-empty -m'apply changes from `nbdev_clean_nbs`'
-#         git add fastai2 && git commit --allow-empty -m'apply changes from `nbdev_build_lib`'
-#         git push -f
-
     - name: comment on PR
       if: failure() && ( steps.clean.outcome == 'failure' || steps.lib.outcome == 'failure' )
       uses: actions/github-script@v2
@@ -99,48 +91,5 @@ jobs:
             body: `👋 @${user}! We detected notebooks that are not stripped or that are out of sync with the library in this PR.\n\nYou need to run \`nbdev_install_git_hooks\` before submitting a pull request! For more information, see the [CONTRIBUTING](https://github.com/${{github.repository}}#contributing) guide.\n\nYou can see the logs of the tests that triggered this message in run [${{github.run_id}}](https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}).`
           })
 
-  test-notebooks:
-    container: fastdotai/fastai2
-    runs-on: ubuntu-latest
-    env:
-      download: "true"
-      caching: "true"
-    strategy:
-      matrix:
-        nb: ['[0-2]','[3-5]','[6-9]']
-    steps:
-    - name: checkout contents of PR
-      uses: actions/checkout@v2
-      if: github.event_name == 'pull_request_target'
-      with:
-        ref: ${{github.event.pull_request.head.ref}}
-        repository: ${{github.event.pull_request.head.repo.full_name}}
-        
-    - name: checkout contents of PR
-      if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-      uses: actions/checkout@v2
 
-    - name: Install libraries
-      run: |
-        pip install -U nbdev
-        pip install -Ue .
-    
-    - name: check for cache hit
-      uses: actions/cache@v2
-      if: env.caching == 'true'
-      id: cache
-      with:
-        path: ~/.fastai/data
-        key: 'fastai-test-data-v1'
-
-    - name: download data
-      if: env.download == 'true' && steps.cache.outputs.cache-hit != 'true'
-      run: |
-        python /workspace/download_testdata.py
-        mkdir -p $HOME/.fastai/data
-        find $HOME/.fastai/archive/ -name "*.tgz" -exec tar -xzvf {} -C $HOME/.fastai/data \;
-      
-    - name: Test notebooks batch ${{matrix.nb}}
-      run: |
-        nbdev_test_nbs --flags '' --n_workers 4 --timing True --fname "nbs/[0-9]${{matrix.nb}}*.ipynb"
   
