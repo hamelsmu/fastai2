@@ -41,10 +41,10 @@ jobs:
         ref: ${{github.event.pull_request.head.ref}}
         repository: ${{github.event.pull_request.head.repo.full_name}}
 
-#     - name: Install libraries
-#       run: |
-#         pip install -U nbdev
-#         pip install -Ue .
+    - name: Install libraries
+      run: |
+        pip install -U nbdev
+        # pip install -Ue .
 
     - name: Attempt to read notebooks
       run: |
