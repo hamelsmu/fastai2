@@ -12,6 +12,10 @@ from .callback.core import *
 # Cell
 #nbdev_comment _all_ = ['CancelFitException', 'CancelEpochException', 'CancelTrainException', 'CancelValidException', 'CancelBatchException']
 
+def foo():
+    """This is supposed trigger a CI error"""
+    return false
+
 # Cell
 _loop = ['Start Fit', 'begin_fit', 'Start Epoch Loop', 'begin_epoch', 'Start Train', 'begin_train',
          'Start Batch Loop', 'begin_batch', 'after_pred', 'after_loss', 'after_backward',
