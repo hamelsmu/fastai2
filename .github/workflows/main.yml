@@ -41,20 +41,20 @@ jobs:
         ref: ${{github.event.pull_request.head.ref}}
         repository: ${{github.event.pull_request.head.repo.full_name}}
 
-    - name: Install libraries
-      run: |
-        pip install -U nbdev
-        # pip install -Ue .
+#     - name: Install libraries
+#       run: |
+#         pip install -U nbdev
+#         pip install -Ue .
 
-    - name: Attempt to read notebooks
-      run: |
-        nbdev_read_nbs
+#     - name: Attempt to read notebooks
+#       run: |
+#         nbdev_read_nbs
 
     - name: Check if notebooks are clean
       id: clean
       run: |
         ls
-        nbdev_clean_nbs
+        # nbdev_clean_nbs
         if [ -n "$(git status -uno -s)" ]; then
           echo"::set-output name=forgot_to_clean::true"
           echo "::error::Detected notebooks that are not cleaned."
@@ -63,19 +63,19 @@ jobs:
           exit 1;
         fi
   
-    - name: Check that library syncs with notebooks
-      id: lib
-      run: |
-        nbdev_diff_nbs > _nbdev_diff_logs.txt
-        if [ -n "$(cat _nbdev_diff_logs.txt)" ]; then 
-          echo "::set-output name=forgot_to_lib::true"
-          echo "::error::Detected notebooks that are not in sync with the library."
-          cat _nbdev_diff_logs.txt
-          exit 1;
-          if [[ $auto_fix == 'true' ]]; then 
-            nbdev_build_lib
-          fi
-        fi
+#     - name: Check that library syncs with notebooks
+#       id: lib
+#       run: |
+#         nbdev_diff_nbs > _nbdev_diff_logs.txt
+#         if [ -n "$(cat _nbdev_diff_logs.txt)" ]; then 
+#           echo "::set-output name=forgot_to_lib::true"
+#           echo "::error::Detected notebooks that are not in sync with the library."
+#           cat _nbdev_diff_logs.txt
+#           exit 1;
+#           if [[ $auto_fix == 'true' ]]; then 
+#             nbdev_build_lib
+#           fi
+#         fi
 
     - name: comment on PR
       if: failure() && ( steps.clean.outcome == 'failure' || steps.lib.outcome == 'failure' )
