@@ -59,7 +59,7 @@ jobs:
       id: clean
       run: |
         ls
-        # nbdev_clean_nbs
+        nbdev_clean_nbs
         if [ -n "$(git status -uno -s)" ]; then
           echo"::set-output name=forgot_to_clean::true"
           echo "::error::Detected notebooks that are not cleaned."
